@@ -14,7 +14,7 @@ module Watchdog
           relation = rom.relations[:ips].by_pk(request.params[:id])
           relation.one!
 
-          relation.changeset(:update, enabled: true).commit
+          relation.command(:update).call(enabled: true)
 
           response.format = :json
           response.body = { message: "IP #{request.params[:id]} is enabled" }.to_json

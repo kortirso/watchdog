@@ -14,7 +14,7 @@ module Watchdog
           relation = rom.relations[:ips].by_pk(request.params[:id])
           relation.one!
 
-          relation.changeset(:delete).commit
+          relation.command(:delete).call
 
           response.format = :json
           response.body = { message: "IP #{request.params[:id]} is deleted" }.to_json
