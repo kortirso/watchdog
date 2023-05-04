@@ -5,6 +5,8 @@ module Watchdog
     module Relations
       class Ips < ROM::Relation[:sql]
         schema(:ips, infer: true)
+
+        auto_struct(true)
       end
     end
   end

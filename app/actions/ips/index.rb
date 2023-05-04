@@ -12,7 +12,7 @@ module Watchdog
             .relations[:ips]
             .select(:id, :enabled)
             .order(:id)
-            .to_a
+            .map(&:to_h)
 
           response.format = :json
           response.body = ips.to_json
