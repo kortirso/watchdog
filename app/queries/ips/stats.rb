@@ -6,46 +6,54 @@ module Watchdog
       class Stats
         include Deps['persistence.db']
 
-        def call(ip_id:)
+        def call(ip_id:, time_from: nil, time_to: nil)
+          @select_condition = fetch_select_condition(ip_id, time_from, time_to)
+
           basis_stats = db.fetch(
-            'SELECT
+            "SELECT
               COUNT(id) as total_amount,
               COUNT(response_time) as completed_amount,
               AVG(response_time) AS average_time,
               MIN(response_time) AS min_response_time,
               MAX(response_time) AS max_response_time
             FROM requests
-            WHERE ip_id = ?',
-            ip_id
+            WHERE #{@select_condition}"
           ).first
 
           basis_stats.merge(
-            median_time: find_median(basis_stats[:completed_amount], ip_id),
+            median_time: find_median(basis_stats[:completed_amount]),
             lost_requests_ratio: find_lost_requests_ratio(basis_stats)
-          ).transform_values { |e| e&.round(2) }
+          ).transform_values { |e| e&.round(2).to_f }
         end
 
         private
 
-        def find_median(completed_amount, ip_id)
+        def fetch_select_condition(ip_id, time_from, time_to)
+          result = ["ip_id = #{ip_id}"]
+          result << "DATE(created_at) >= '#{time_from}'" if time_from
+          result << "DATE(created_at) <= '#{time_to}'" if time_to
+
+          result.join(' AND ')
+        end
+
+        def find_median(completed_amount)
           return if completed_amount.zero?
 
           if completed_amount.odd?
-            median_request(ip_id, completed_amount / 2, 1).first
+            median_request(completed_amount / 2, 1).first
           else
-            median_request(ip_id, (completed_amount / 2) - 1, 2).all.sum { |e| e[:response_time] } / 2
+            median_request((completed_amount / 2) - 1, 2).all.sum { |e| e[:response_time] } / 2
           end
         end
 
-        def median_request(ip_id, offset, limit)
+        def median_request(offset, limit)
           db.fetch(
-            'SELECT response_time
+            "SELECT response_time
             FROM requests
-            WHERE ip_id = ? AND response_time IS NOT NULL
+            WHERE #{@select_condition} AND response_time IS NOT NULL
             ORDER BY response_time ASC
             OFFSET ?
-            LIMIT ?',
-            ip_id,
+            LIMIT ?",
             offset,
             limit
           )

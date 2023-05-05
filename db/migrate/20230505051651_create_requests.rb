@@ -8,6 +8,8 @@ ROM::SQL.migration do
       foreign_key :ip_id, :ips
 
       column :response_time, :numeric, precision: 5, scale: 2
+
+      column :created_at, 'timestamp(6) without time zone', null: false, default: Sequel.lit('now()')
     end
   end
 end

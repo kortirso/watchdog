@@ -26,11 +26,11 @@ RSpec.describe 'GET /ips/:id/stats', type: %i[request database] do
         'stats' => {
           'completed_amount' => 0,
           'total_amount' => 0,
-          'average_time' => nil,
-          'min_response_time' => nil,
-          'max_response_time' => nil,
-          'median_time' => nil,
-          'lost_requests_ratio' => nil
+          'average_time' => 0,
+          'min_response_time' => 0,
+          'max_response_time' => 0,
+          'median_time' => 0,
+          'lost_requests_ratio' => 0
         }
       )
     end
