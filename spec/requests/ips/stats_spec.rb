@@ -20,7 +20,7 @@ RSpec.describe 'GET /ips/:id/stats', type: %i[request database] do
 
       expect(last_response).to be_ok
       expect(JSON.parse(last_response.body)).to eq(
-        'id' => ip_id, 'enabled' => false
+        'id' => ip_id, 'enabled' => false, 'address' => ''
       )
     end
   end
