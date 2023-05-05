@@ -15,9 +15,9 @@ module Watchdog
 
       def perform_address_check(ip_struct)
         response_time = perform_ping_request(ip_struct.address)
-        rom.relations[:requests].changeset(:create, response_time: response_time, ip_id: ip_struct.id).commit
+        create_request(response_time, ip_struct.id)
       rescue Timeout::Error => _e
-        rom.relations[:requests].changeset(:create, completed: false, ip_id: ip_struct.id).commit
+        create_request(nil, ip_struct.id)
       end
 
       def perform_ping_request(address)
@@ -25,6 +25,10 @@ module Watchdog
           `ping -c1 #{address}` =~ %r{= \d+\.\d+/(\d+\.\d+)}
           ::Regexp.last_match(1)&.to_f&.round(2)
         end
+      end
+
+      def create_request(response_time, ip_id)
+        rom.relations[:requests].changeset(:create, response_time: response_time, ip_id: ip_id).commit
       end
     end
   end

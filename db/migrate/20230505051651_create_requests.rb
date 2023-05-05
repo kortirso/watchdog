@@ -7,8 +7,7 @@ ROM::SQL.migration do
 
       foreign_key :ip_id, :ips
 
-      column :completed, :boolean, null: false, default: true
-      column :response_time, :numeric, precision: 5, scale: 2, null: false, default: 0
+      column :response_time, :numeric, precision: 5, scale: 2
     end
   end
 end
