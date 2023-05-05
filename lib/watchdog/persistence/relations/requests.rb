@@ -3,10 +3,10 @@
 module Watchdog
   module Persistence
     module Relations
-      class Ips < ROM::Relation[:sql]
-        schema(:ips, infer: true) do
+      class Requests < ROM::Relation[:sql]
+        schema(:requests, infer: true) do
           associations do
-            has_many :requests
+            belongs_to :ip
           end
         end
 
