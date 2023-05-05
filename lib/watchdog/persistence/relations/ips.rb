@@ -10,6 +10,10 @@ module Watchdog
           end
         end
 
+        def with_requests
+          combine(:requests)
+        end
+
         auto_struct(true)
       end
     end
