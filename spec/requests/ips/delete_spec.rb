@@ -3,7 +3,7 @@
 RSpec.describe 'DELETE /ips/:id', type: %i[request database] do
   let(:ips) { app['persistence.rom'].relations[:ips] }
 
-  let!(:ip_id) { ips.insert }
+  let!(:ip) { WatchdogFactory[:ip] }
 
   context 'for not existing ip' do
     let(:request) { delete '/ips/0' }
@@ -21,7 +21,7 @@ RSpec.describe 'DELETE /ips/:id', type: %i[request database] do
   end
 
   context 'for existing ip' do
-    let(:request) { delete "/ips/#{ip_id}" }
+    let(:request) { delete "/ips/#{ip.id}" }
 
     it 'deletes Ip record in database' do
       expect { request }.to change(ips, :count).by(-1)
@@ -31,7 +31,7 @@ RSpec.describe 'DELETE /ips/:id', type: %i[request database] do
       request
 
       expect(last_response).to be_ok
-      expect(JSON.parse(last_response.body)['message']).to eq "IP #{ip_id} is deleted"
+      expect(JSON.parse(last_response.body)['message']).to eq "IP #{ip.id} is deleted"
     end
   end
 end

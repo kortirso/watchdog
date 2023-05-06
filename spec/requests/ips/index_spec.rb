@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe 'GET /ips', type: %i[request database] do
-  let(:ips) { app['persistence.rom'].relations[:ips] }
-
-  let!(:ip_first) { ips.insert(enabled: false) }
-  let!(:ip_second) { ips.insert(enabled: false) }
+  let!(:ip_first) { WatchdogFactory[:ip] }
+  let!(:ip_second) { WatchdogFactory[:ip, enabled: false] }
 
   it 'returns a list of ips', :aggregate_failures do
     get '/ips'
@@ -16,8 +14,8 @@ RSpec.describe 'GET /ips', type: %i[request database] do
 
     expect(response_body).to eq(
       [
-        { 'id' => ip_first, 'enabled' => false },
-        { 'id' => ip_second, 'enabled' => false }
+        { 'id' => ip_first.id, 'enabled' => true },
+        { 'id' => ip_second.id, 'enabled' => false }
       ]
     )
   end

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'GET /ips/:id/stats', type: %i[request database] do
-  let(:ips) { app['persistence.rom'].relations[:ips] }
-
-  let!(:ip_id) { ips.insert }
+  let!(:ip) { WatchdogFactory[:ip, enabled: false] }
 
   context 'for not existing ip' do
     it 'returns valid response', :aggregate_failures do
@@ -16,13 +14,13 @@ RSpec.describe 'GET /ips/:id/stats', type: %i[request database] do
 
   context 'for existing ip' do
     it 'returns valid response', :aggregate_failures do
-      get "/ips/#{ip_id}/stats"
+      get "/ips/#{ip.id}/stats"
 
       expect(last_response).to be_ok
       expect(JSON.parse(last_response.body)).to eq(
-        'id' => ip_id,
+        'id' => ip.id,
         'enabled' => false,
-        'address' => '',
+        'address' => '8.8.8.8',
         'stats' => {
           'completed_amount' => 0,
           'total_amount' => 0,

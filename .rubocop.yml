@@ -154,3 +154,6 @@ RSpec/ExampleLength:
 
 RSpec/Rails/InferredSpecType:
   Enabled: false
+
+RSpec/FilePath:
+  Enabled: false
