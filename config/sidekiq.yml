@@ -1,0 +1,5 @@
+:scheduler:
+  :schedule:
+    perform_monitoring:
+      cron: '0 * * * * *' # Runs once per minute
+      class: Watchdog::Workers::PerformMonitoring

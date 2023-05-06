@@ -21,6 +21,10 @@ gem 'rom-sql', '~> 3.6'
 # thread pool
 gem 'parallel'
 
+# background jobs
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
+
 group :development, :test do
   gem 'dotenv'
   gem 'rubocop', '~> 1.35', require: false

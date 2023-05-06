@@ -4,7 +4,7 @@ require 'parallel'
 
 module Watchdog
   module Services
-    class PerformRequests
+    class PerformMonitoring
       include Deps['persistence.rom']
 
       THREAD_POOL_SIZE = 5
