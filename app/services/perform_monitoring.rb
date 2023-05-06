@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'parallel'
+require 'resolv'
 
 module Watchdog
   module Services
@@ -29,8 +30,9 @@ module Watchdog
       end
 
       def perform_ping_request(address)
+        request = Resolv::IPv4::Regex.match?(address) ? 'ping' : 'ping6'
         Timeout.timeout(REQUEST_TIME_LIMIT_SECONDS) do
-          `ping -c1 #{address}` =~ %r{= \d+\.\d+/(\d+\.\d+)}
+          `#{request} -c1 #{address}` =~ %r{= \d+\.\d+/(\d+\.\d+)}
           ::Regexp.last_match(1)&.to_f&.round(2)
         end
       end

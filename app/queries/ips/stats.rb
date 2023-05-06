@@ -40,7 +40,7 @@ module Watchdog
           return if completed_amount.zero?
 
           if completed_amount.odd?
-            median_request(completed_amount / 2, 1).first
+            median_request(completed_amount / 2, 1).first[:response_time]
           else
             median_request((completed_amount / 2) - 1, 2).all.sum { |e| e[:response_time] } / 2
           end

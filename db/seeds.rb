@@ -12,3 +12,5 @@ ips.insert(address: '104.21.72.173', enabled: true) # rutracker.org
 ips.insert(address: '140.82.113.3', enabled: true) # github
 ips.insert(address: '172.65.251.78', enabled: true) # gitlab
 ips.insert(address: '157.240.3.35', enabled: true) # facebook
+
+ips.insert(address: '2606:4700:7::a29f:9904', enabled: true) # medium.com
