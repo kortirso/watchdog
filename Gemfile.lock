@@ -249,6 +249,7 @@ DEPENDENCIES
   hanami-router (~> 2.0)
   hanami-rspec
   hanami-validations (~> 2.0)
+  parallel
   pg
   puma
   rack-test

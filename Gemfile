@@ -18,6 +18,9 @@ gem 'pg'
 gem 'rom', '~> 5.3'
 gem 'rom-sql', '~> 3.6'
 
+# thread pool
+gem 'parallel'
+
 group :development, :test do
   gem 'dotenv'
   gem 'rubocop', '~> 1.35', require: false
