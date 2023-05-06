@@ -7,10 +7,13 @@ module Watchdog
     class PerformRequests
       include Deps['persistence.rom']
 
+      THREAD_POOL_SIZE = 5
+      REQUEST_TIME_LIMIT_SECONDS = 1
+
       def call
         Parallel.map(
           rom.relations[:ips].where(enabled: true).select(:id, :address).to_a,
-          in_threads: 5
+          in_threads: THREAD_POOL_SIZE
         ) do |ip_struct|
           perform_address_check(ip_struct)
         end
@@ -26,7 +29,7 @@ module Watchdog
       end
 
       def perform_ping_request(address)
-        Timeout.timeout(1) do
+        Timeout.timeout(REQUEST_TIME_LIMIT_SECONDS) do
           `ping -c1 #{address}` =~ %r{= \d+\.\d+/(\d+\.\d+)}
           ::Regexp.last_match(1)&.to_f&.round(2)
         end
