@@ -12,15 +12,32 @@ module Watchdog
       REQUEST_TIME_LIMIT_SECONDS = 1
 
       def call
-        Parallel.map(
-          rom.relations[:ips].where(enabled: true).select(:id, :address).to_a,
-          in_threads: THREAD_POOL_SIZE
-        ) do |ip_struct|
+        parallel_monitoring? ? perform_parallel_monitoring : perform_sequent_monitoring
+      end
+
+      private
+
+      def parallel_monitoring?
+        return false if Hanami.env?(:test)
+
+        ENV.fetch('PARALLEL_MONITORING', false)
+      end
+
+      def relation
+        rom.relations[:ips].where(enabled: true).select(:id, :address).to_a
+      end
+
+      def perform_parallel_monitoring
+        Parallel.map(relation, in_threads: THREAD_POOL_SIZE) do |ip_struct|
           perform_address_check(ip_struct)
         end
       end
 
-      private
+      def perform_sequent_monitoring
+        relation.each do |ip_struct|
+          perform_address_check(ip_struct)
+        end
+      end
 
       def perform_address_check(ip_struct)
         response_time = perform_ping_request(ip_struct.address)

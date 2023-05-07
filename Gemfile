@@ -38,16 +38,13 @@ group :cli, :development do
   gem 'hanami-reloader'
 end
 
-group :cli, :development, :test do
-  gem 'hanami-rspec'
-end
-
 group :development do
   gem 'guard-puma', '~> 0.8'
 end
 
 group :test do
   gem 'database_cleaner-sequel'
+  gem 'hanami-rspec'
   gem 'rack-test'
   gem 'rom-factory'
 end
