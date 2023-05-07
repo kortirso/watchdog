@@ -15,6 +15,14 @@ jobs:
         with:
           ruby-version: 3.2.0
 
+      - name: Install latest bundler
+        run: |
+          gem install bundler --no-document
+          bundle config set without 'tools benchmarks docs'
+
+      - name: Bundle install
+        run: bundle install --jobs 4 --retry 3
+
       - name: Run linters
         run: |
           bundle exec rubocop
@@ -24,13 +32,13 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:14.7
+        image: postgres:latest
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-          - 5432/tcp
+          - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -53,6 +61,9 @@ jobs:
 
       - name: Prepare env
         run: cp .env.test.example .env.test
+
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
 
       - name: Setup test database
         env:
